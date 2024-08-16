@@ -1,0 +1,8 @@
+gradio
+boto3
+logging
+json
+time
+botocore
+langdetect
+argparse
