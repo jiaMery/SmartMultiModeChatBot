@@ -12,7 +12,7 @@ s3 = boto3.client('s3')
 cloudwatchLog = boto3.client('logs')
 
 # Setup S3 Path to save history audio data
-bucket_name = 's3-exp-data'
+bucket_name = 'your_bucket_name'
 s3_inputAudio_path = 'smart-audio-chatbot/input-audio/'
 s3_outputAudio_path = 'smart-audio-chatbot/output-audio/'
 s3_Audio_path = 'smart-audio-chatbot/audio-path/'
