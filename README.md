@@ -7,6 +7,9 @@ This is a Python project that allows you to:
 4. Implement intelligent voice/text interaction conversation using LLM named Claude3-Sonnet on Amazon Bedrock
 the user-friendly interface built with Gradio.
 
+# WebUI of SmartMultiModeChatBot
+![Example Image](images/webui7.jpg)
+
 # Installation
 
 Clone the repository:
