@@ -11,7 +11,8 @@ the user-friendly interface built with Gradio.
 ![Example Image](images/webui7.jpg)
 
 # Quick Start
-Start Stack on Amazon Web Service
+Deploying this solution on Amazon Web Service.
+
 If you have AWS Account, you can:
 1. Navigate to AWS CloudFormation
 2. Specify this [template](template/smartChatbot.yaml)
