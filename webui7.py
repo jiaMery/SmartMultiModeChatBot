@@ -1,21 +1,27 @@
 import gradio as gr
-import boto3,logging,json,time
+import boto3,logging,json,time,io
 from botocore.exceptions import ClientError,NoCredentialsError, PartialCredentialsError
 from langdetect import detect
-import argparse
+import argparse,uuid
+import numpy as np
+
+ # Specify your desired region
+region = 'us-east-1'
 
 # Set up AWS clients
-transcribe = boto3.client('transcribe')
-polly = boto3.client('polly')
-client_llm = boto3.client(service_name='bedrock-runtime')
-s3 = boto3.client('s3')
-cloudwatchLog = boto3.client('logs')
+transcribe = boto3.client('transcribe',region_name=region)
+polly = boto3.client('polly',region_name=region)
+client_llm = boto3.client(service_name='bedrock-runtime',region_name=region)
+s3 = boto3.client('s3',region_name=region)
+cloudwatchLog = boto3.client('logs',region_name=region)
 
 # Setup S3 Path to save history audio data
-bucket_name = 'your_bucket_name'
+bucket_prefix = 'smart-chatbot'
 s3_inputAudio_path = 'smart-audio-chatbot/input-audio/'
 s3_outputAudio_path = 'smart-audio-chatbot/output-audio/'
 s3_Audio_path = 'smart-audio-chatbot/audio-path/'
+bucket_name = ''
+
 
 #Setup CloudWatch Log
 LOG_GROUP_NAME = '/aws/smartMultiChatbot'
@@ -24,6 +30,57 @@ LOG_STREAM_NAME = 'smartMultiChatBotStream'
 # Language code of Speech
 LanguageCode_Audio = ['Chinese', 'English','Japan']
 LanguageCodeIdIntranscribe = {'0':'zh-CN','1':'en-US','2':'Japan'}
+
+def does_bucket_exist(bucket_prefix):
+    """Check if there is any bucket with the given prefix."""
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.list_buckets()
+        for bucket in response['Buckets']:
+            if bucket['Name'].startswith(bucket_prefix):
+                return bucket['Name']
+    except ClientError as e:
+        print(f"Error checking bucket existence: {e}")
+    return None
+
+def create_unique_bucket(bucket_prefix, region=None):
+    """Create an S3 bucket with a unique name."""
+    bucket_name = f"{bucket_prefix}-{uuid.uuid4()}"
+    print(bucket_name)
+    try:
+        if region is None or "us-east-1":
+            s3_client = boto3.client('s3')
+            s3_client.create_bucket(Bucket=bucket_name)
+        else:
+            s3_client = boto3.client('s3', region_name=region)
+            location = {'LocationConstraint': region}
+            s3_client.create_bucket(Bucket=bucket_name, CreateBucketConfiguration=location)
+        print(f"Bucket {bucket_name} created successfully.")
+        return bucket_name
+    except ClientError as e:
+        print(f"Error creating bucket: {e}")
+        return None
+
+def does_folder_exist(bucket_name, folder_name):
+    """Check if a folder exists in the specified bucket."""
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=folder_name + '/')
+        for obj in response.get('Contents', []):
+            if obj['Key'].startswith(folder_name + '/'):
+                return True
+    except ClientError as e:
+        print(f"Error checking folder existence: {e}")
+    return False
+
+def create_folder(bucket_name, folder_name):
+    """Create a folder in the specified bucket."""
+    s3_client = boto3.client('s3')
+    try:
+        s3_client.put_object(Bucket=bucket_name, Key=(folder_name + '/'))
+        print(f"Folder {folder_name} created successfully in bucket {bucket_name}.")
+    except ClientError as e:
+        print(f"Error creating folder: {e}")
 
 # Create CloudWatch Log Group
 def create_log_group():
@@ -62,11 +119,6 @@ def put_log_events(message):
 
 #Save history chat Data into local/S3 Bucket
 def saveHistory(data,path=s3_Audio_path):
-    if type(data) == None:
-        return "Please record again, please don't submit None speech"
-    else:
-        pass
-
     localAudioPath = data
     if type(data) != str:
         localAudioPath = 'output.mp3'
@@ -86,7 +138,6 @@ def saveHistory(data,path=s3_Audio_path):
     except Exception as e:
         print(f'Error uploading file: {e}')
         logger.error("AWS credentials not found or incomplete: %s", e)
-
 
 # Detect Language Code 
 def languageCodeDetection(text):
@@ -238,6 +289,36 @@ try:
     put_log_events("This is an info message")
 except (NoCredentialsError, PartialCredentialsError) as e:
     logger.error("AWS credentials not found or incomplete: %s", e)
+
+# Check if a bucket with the specified prefix exists
+bucket_name = does_bucket_exist(bucket_prefix)
+print(bucket_name)
+if bucket_name:
+    print(f"A bucket with prefix '{bucket_prefix}' already exists: {bucket_name}")
+else:
+    # Create a new unique bucket
+    bucket_name = create_unique_bucket(bucket_prefix, region)
+    print(bucket_name)
+if bucket_name:
+    # Check if the folder exists in the bucket
+    if does_folder_exist(bucket_name, s3_inputAudio_path):
+        print(f"Folder '{s3_inputAudio_path}' already exists in bucket '{bucket_name}'.")
+    else:
+        # Create the folder in the bucket
+        create_folder(bucket_name, s3_inputAudio_path)
+    # Check if the folder exists in the bucket
+    if does_folder_exist(bucket_name, s3_outputAudio_path):
+        print(f"Folder '{s3_outputAudio_path}' already exists in bucket '{bucket_name}'.")
+    else:
+        # Create the folder in the bucket
+        create_folder(bucket_name, s3_outputAudio_path)
+    # Check if the folder exists in the bucket
+    if does_folder_exist(bucket_name, s3_Audio_path):
+        print(f"Folder '{s3_Audio_path}' already exists in bucket '{bucket_name}'.")
+    else:
+        # Create the folder in the bucket
+        create_folder(bucket_name, s3_Audio_path)
+
 
 # Create a Gradio interface
 def main():
