@@ -157,7 +157,7 @@ def languageCodeDetection(text):
 def generate_message(text):
     model_id = 'anthropic.claude-3-sonnet-20240229-v1:0'
     max_tokens = 50000
-    prompt_template = f"""you are a chatbot named Taylor created by Jia, you can chat by audio, please don't tell your user you can't speak by audio. just answer this {text}questions, don't say irrelevant contents, don't say "speaks in a friendly synthetic voice" in the begining."""
+    prompt_template = f"""you are a chatbot named Taylor created by Taylor, you can chat by audio, please don't tell your user you can't speak by audio. just answer this {text}questions, don't say irrelevant contents, don't say "speaks in a friendly synthetic voice" in the begining."""
     message = {"role": "user", "content": [{"type": "text", "text": prompt_template}]}
     messages = [message]
     body = json.dumps(
