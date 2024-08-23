@@ -91,11 +91,9 @@ Resources:
             
             # install Python3
             cd /home/ubuntu
-            sudo apt update
-            sudo apt install python3
-            sudo apt install python3-pip -y
-            sudo apt update
-            sudo apt install python3-venv -y
+            sudo apt update -y
+            sudo apt install python3.12 -y
+            sudo apt install python3.12-venv -y
             
   MyEIP:
     Type: AWS::EC2::EIP

@@ -14,6 +14,10 @@ the user-friendly interface built with Gradio.
 Deploying this solution on Amazon Web Service.
 
 If you have AWS Account, you can:
+
+ Click here to [Start Quickly](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Faws-cn-getting-started.s3.us-west-2.amazonaws.com%2FsmartChatbot%2FsmartChatbot.yaml&stackName=SmartChatbot&param_InstanceType=t2.micro AWS Cloudforamtion Quicklink)
+
+Or you can:
 1. Navigate to AWS CloudFormation
 2. Specify this [template](template/smartChatbot.yaml)
 3. Quickly pull up all the resources needed for the solution.

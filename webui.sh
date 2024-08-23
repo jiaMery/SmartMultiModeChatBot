@@ -1,9 +1,12 @@
-#check Python3 and Pip
-which Python3
-Which pip3
+# Update
+sudo apt update -y
+# Install Python3 and Pip
+sudo apt install python3.12 -y
+sudo apt install python3.12-venv -y
+# Create python virtual environment
 python3 -m venv env
 source env/bin/activate
-#Install the required packages:
+#Install the required packages
 pip install -r requirements.txt
 #start webui
 python webui7.py
