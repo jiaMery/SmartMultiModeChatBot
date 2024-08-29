@@ -58,7 +58,7 @@ Resources:
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.micro
+      InstanceType: !Ref InstanceType
       ImageId: 
         Fn::FindInMap:
           - RegionToAMI
@@ -77,23 +77,23 @@ Resources:
         - Ref: SecurityGroup
       UserData:
         Fn::Base64: !Sub |
-          'Fn::Base64': |
             #!/bin/bash
 
             # install SSM Agent
-            sudo snap install amazon-ssm-agent --classic
-            sudo snap start amazon-ssm-agent
+            # sudo snap install amazon-ssm-agent --classic
+            # sudo snap start amazon-ssm-agent
 
             # clone repo from git
+            cd /home/ubuntu
             git clone https://github.com/jiaMery/SmartMultiModeChatBot.git
             # change ownership of the web UI so that a regular user can start the server
             sudo chown -R ubuntu:ubuntu SmartMultiModeChatBot/
             
             # install Python3
-            cd /home/ubuntu
-            sudo apt update -y
-            sudo apt install python3.12 -y
-            sudo apt install python3.12-venv -y
+            # sudo apt update -y
+            # sudo apt install python3 -y
+            # sudo apt install python3-pip -y
+            # sudo apt install python3-venv -y
             
   MyEIP:
     Type: AWS::EC2::EIP
@@ -114,3 +114,5 @@ Outputs:
         - - http://
           - !Ref MyEIP
           - :7860
+
+    
