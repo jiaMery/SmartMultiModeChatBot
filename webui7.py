@@ -29,7 +29,7 @@ LOG_STREAM_NAME = 'smartMultiChatBotStream'
 
 # Language code of Speech
 LanguageCode_Audio = ['Chinese', 'English','Japan']
-LanguageCodeIdIntranscribe = {'0':'zh-CN','1':'en-US','2':'Japan'}
+LanguageCodeIdIntranscribe = {'0':'zh-CN','1':'en-US','2':'ja-JP'}
 
 def does_bucket_exist(bucket_prefix):
     """Check if there is any bucket with the given prefix."""
@@ -201,7 +201,7 @@ def transcribe_audio(audio,languageCode_audio=1,toxicityDectect=False):
         print(f"Trancribe Job Integer Time Stamp: {integer_timestamp}")
         job_name = 'transcription-job'+str(integer_timestamp)
         logger.info(f"This is :{job_name}")
-        if languageCode_audio:
+        if languageCode_audio==1:
             transcribe.start_transcription_job(
                 TranscriptionJobName=job_name,
                 Media={'MediaFileUri': fileUri},
