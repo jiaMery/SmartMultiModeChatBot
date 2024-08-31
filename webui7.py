@@ -239,9 +239,12 @@ def transcribe_audio(audio,languageCode_audio=1,toxicityDectect=False):
                 key,value = GetToxicityResult_audio(results)
                 Toxicity_label = str(key)
                 Toxicity_score = str(value)
-                put_log_events(f"Toxicity:{transcribe_result} label:{key} score:{value}")
-                ui_response = f"transcribe result: {transcribe_result} \nToxicity label: {Toxicity_label} \nToxicity Score: {Toxicity_score} \nReminder!It is likely an unsafe speech!"
-                return ui_response
+                if Toxicity_label != '':
+                    put_log_events(f"Toxicity:{transcribe_result} label:{key} score:{value}")
+                    ui_response = f"transcribe result: {transcribe_result} \nToxicity label: {Toxicity_label} \nToxicity Score: {Toxicity_score} \nReminder!It is likely an unsafe speech!"
+                    return ui_response
+                else:
+                    return transcribe_result
             else:
                 return transcribe_result
         else:
