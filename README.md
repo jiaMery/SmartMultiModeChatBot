@@ -7,6 +7,9 @@ This is a Python project that allows you to:
 4. Implement intelligent voice/text interaction conversation using LLM named Claude3-Sonnet on Amazon Bedrock
 the user-friendly interface built with Gradio.
 
+For detailed deployment steps and additional information, please refer to our [blog post](https://aws.amazon.com/cn/blogs/china/building-a-large-scale-voice-interaction-solution-using-amazon-bedrock-polly-and-transcribe/) on AWS.
+
+
 # WebUI of SmartMultiModeChatBot
 ![Example Image](images/webui7.jpg)
 
@@ -15,7 +18,7 @@ Deploying this solution on Amazon Web Service.
 
 If you have AWS Account, you can:
 
- Click here to [Start Quickly](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Faws-cn-getting-started.s3.us-west-2.amazonaws.com%2FsmartChatbot%2FsmartChatbot.yaml&stackName=SmartChatbot&param_InstanceType=t2.micro AWS Cloudforamtion Quicklink)
+ Click here to [Start Quickly](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Faws-cn-getting-started.s3.us-west-2.amazonaws.com%2FsmartChatbot%2FsmartChatbot.yaml&stackName=SmartChatbot&param_InstanceType=t2.micro) AWS Cloudforamtion Quicklink
 
 Or you can:
 1. Navigate to AWS CloudFormation
